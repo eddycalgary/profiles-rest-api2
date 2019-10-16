@@ -9,19 +9,6 @@ class UserProfileManager(BaseUserManager):
 
     def create_user(self, email, name, password=None):
         """Create a new user profiles"""
-
-
-class UserProfile(AbstractBaseUser, PermissionsMixin):
-    '''Database model for users in the system'''
-    email = models.EmailField(max_length=225, unique=True)
-    name = models.CharField(max_length=225)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
-    objects = UserProfileManager()
-
-    def create_user(self, email, name, password=None):
-        """Create a new user profile"""
         if not email:
             raise ValueError("User must have an email address")
 
@@ -35,7 +22,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
         return user
 
-
     def create_superuser(self, email, name, password):
         """Create and save a new superuser with given details"""
         user = self.create_user(email, name, password)
@@ -43,6 +29,19 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         user.is_superuser = True
         user.is_staff=True
         user.save(using=self._db)
+
+        return user
+
+
+class UserProfile(AbstractBaseUser, PermissionsMixin):
+    '''Database model for users in the system'''
+    email = models.EmailField(max_length=225, unique=True)
+    name = models.CharField(max_length=225)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = UserProfileManager()
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
